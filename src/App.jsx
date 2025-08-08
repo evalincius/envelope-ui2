@@ -45,11 +45,26 @@ function App() {
 
         * { box-sizing: border-box; }
         html, body, #root { height: 100%; }
-        body { margin: 0; background: var(--env-bg); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+        body {
+          margin: 0;
+          background: var(--env-bg);
+          color: var(--ink);
+          font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+          min-height: 100dvh;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        /* Ensure #root fills the width and has no padding that offsets centering */
+        #root { width: 100%; max-width: none; margin: 0; padding: 0; display: grid; place-items: center; }
 
         .envelope-app {
-          display: grid;
-          place-items: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
         }
 
         .stage {
