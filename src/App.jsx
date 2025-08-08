@@ -15,26 +15,26 @@ function App() {
   }, [])
 
   function startSequence() {
-    // Reset
-    setIsOpening(false)
-    setIsLetterOut(false)
-    setIsLetterAbove(false)
+    // Clear running timers
     timeoutsRef.current.forEach(clearTimeout)
     timeoutsRef.current = []
 
-    // Timeline
-    // 0ms: start opening
-    timeoutsRef.current.push(
-      setTimeout(() => setIsOpening(true), 50)
-    )
-    // 1500ms: letter begins to slide out
-    timeoutsRef.current.push(
-      setTimeout(() => setIsLetterOut(true), 1500)
-    )
-    // After the letter finishes sliding (1.1s transition), bring it above the flap/front
-    timeoutsRef.current.push(
-      setTimeout(() => setIsLetterAbove(true), 2600)
-    )
+    // Start by keeping flap open and sliding letter back in
+    setIsOpening(true)
+    setIsLetterOut(false)
+    setIsLetterAbove(false)
+
+    // After letter slides back (1.1s), close the flap
+    timeoutsRef.current.push(setTimeout(() => setIsOpening(false), 1100))
+
+    // Re-open the flap after it has visibly closed
+    timeoutsRef.current.push(setTimeout(() => setIsOpening(true), 2200))
+
+    // Begin sliding the letter out once flap is opening
+    timeoutsRef.current.push(setTimeout(() => setIsLetterOut(true), 3700))
+
+    // When slide-out completes, bring the letter above all layers
+    timeoutsRef.current.push(setTimeout(() => setIsLetterAbove(true), 4800))
   }
 
   return (
