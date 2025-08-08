@@ -118,19 +118,18 @@ function App() {
           border-radius: 10px;
           box-shadow: 0 8px 14px var(--env-shadow), inset 0 0 0 1px rgba(0,0,0,0.04);
           overflow: hidden;
-          display: grid;
-          grid-template-rows: auto 1fr;
+          display: block;
           transition: transform 1.1s cubic-bezier(.2,.7,.2,1), opacity .6s ease;
           z-index: 2;
         }
 
-        .letter-header {
-          background: linear-gradient(90deg, #f7f2ee, #fff);
-          padding: 12px 16px;
-          border-bottom: 1px solid rgba(0,0,0,0.06);
-          font-weight: 600;
+        .letter-image {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          object-position: center;
         }
-        .letter-body { padding: 16px; font-size: 14px; line-height: 1.5; }
 
         /* Front of envelope (triangles) to hide letter initially */
         .env-front {
@@ -192,10 +191,7 @@ function App() {
             <div className="env-back" />
 
             <div className="letter" aria-hidden={!isOpening}>
-              <div className="letter-header">You're Invited</div>
-              <div className="letter-body">
-                A little something inside just for you. Pulling it out now…
-              </div>
+              <img className="letter-image" src="/pumba.jpg" alt="Card artwork" />
             </div>
 
             <div className="env-front">
