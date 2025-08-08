@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 function App() {
   const [isOpening, setIsOpening] = useState(false)
   const [isLetterOut, setIsLetterOut] = useState(false)
+  const [isLetterAbove, setIsLetterAbove] = useState(false)
   const timeoutsRef = useRef([])
 
   useEffect(() => {
@@ -17,6 +18,7 @@ function App() {
     // Reset
     setIsOpening(false)
     setIsLetterOut(false)
+    setIsLetterAbove(false)
     timeoutsRef.current.forEach(clearTimeout)
     timeoutsRef.current = []
 
@@ -28,6 +30,10 @@ function App() {
     // 1500ms: letter begins to slide out
     timeoutsRef.current.push(
       setTimeout(() => setIsLetterOut(true), 1500)
+    )
+    // After the letter finishes sliding (1.1s transition), bring it above the flap/front
+    timeoutsRef.current.push(
+      setTimeout(() => setIsLetterAbove(true), 2600)
     )
   }
 
@@ -139,7 +145,7 @@ function App() {
           border-radius: 0 0 14px 14px;
           clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
           box-shadow: 0 8px 18px var(--env-shadow-strong);
-          z-index: 3;
+          z-index: 6; /* keep bottom cover above the letter while it is inside */
         }
 
         .flap {
@@ -148,7 +154,7 @@ function App() {
           transform-origin: 50% 0%;
           transform: rotateX(0deg);
           transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
-          z-index: 4;
+          z-index: 3; /* below sliding letter, so the top edge does not tuck under */
         }
         .flap-inner {
           position: absolute; inset: 0;
@@ -167,8 +173,11 @@ function App() {
         .envelope.letter-out .letter {
           transform: translate(-50%, -120px);
           box-shadow: 0 16px 26px var(--env-shadow-strong), inset 0 0 0 1px rgba(0,0,0,0.04);
-          z-index: 6; /* above flap and seal */
+          z-index: 4; /* above flap, but still below front-bottom */
         }
+
+        /* Once fully out, raise above everything including front-bottom */
+        .envelope.letter-front .letter { z-index: 7; }
 
         .controls { display: grid; place-items: center; }
         .replay {
@@ -178,7 +187,7 @@ function App() {
 
       <div className="stage">
         <div className="envelope-scene">
-          <div className={`envelope ${isOpening ? 'is-opening' : ''} ${isLetterOut ? 'letter-out' : ''}`}
+          <div className={`envelope ${isOpening ? 'is-opening' : ''} ${isLetterOut ? 'letter-out' : ''} ${isLetterAbove ? 'letter-front' : ''}`}
                aria-label="Animated envelope revealing content">
             <div className="env-back" />
 
