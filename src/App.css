@@ -9,6 +9,7 @@
   --flap-scale-y: 1.0162; /* normalize flap Y scale to match back/front */
   --flap-rot: 0deg; /* animated via Motion */
   --letter-y: 0px; /* animated via Motion */
+  --letter-scale: 1; /* animated via Motion */
 }
 
 * {
@@ -89,8 +90,8 @@ body {
   position: absolute;
   left: 50%;
   bottom: 26px;
-  /* Keep X-centering in CSS; Y is animated via CSS var */
-  transform: translateX(-50%) translateY(var(--letter-y));
+  /* Keep X-centering in CSS; Y and scale are animated via CSS vars */
+  transform: translateX(-50%) translateY(var(--letter-y)) scale(var(--letter-scale));
   width: 450px;
   height: 300px;
   background: var(--env-paper);
@@ -162,8 +163,10 @@ body {
 }
 
 .controls {
-  display: grid;
-  place-items: center;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
 }
 .replay {
   border: 0;
