@@ -48,6 +48,8 @@ function App() {
           --env-shadow: rgba(0,0,0,0.12);
           --env-shadow-strong: rgba(0,0,0,0.2);
           --ink: #2b2b2b;
+          --flap-scale-x: 1.0147; /* normalize flap X scale to match back/front */
+          --flap-scale-y: 1.0162; /* normalize flap Y scale to match back/front */
         }
 
         * { box-sizing: border-box; }
@@ -115,7 +117,7 @@ function App() {
           left: 50%;
           bottom: 26px;
           transform: translateX(-50%);
-          width: 84%;
+          width: 34%;
           height: 72%;
           background: var(--env-paper);
           border-radius: 10px;
@@ -150,8 +152,9 @@ function App() {
           position: absolute;
           left: 0; right: 0; top: 0; height: 62%;
           width: 100%;
+          height: 99%;
           transform-origin: 50% 0%;
-          transform: rotateX(0deg);
+          transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(0deg);
           transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
           z-index: 3; /* below sliding letter, so the top edge does not tuck under */
           filter: drop-shadow(0 4px 10px var(--env-shadow));
@@ -160,7 +163,7 @@ function App() {
         
 
         /* Open state */
-        .envelope.is-opening .flap-svg { transform: rotateX(-172deg); }
+        .envelope.is-opening .flap-svg { transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(-172deg); }
 
         /* Letter slide out */
         .envelope.letter-out .letter {
