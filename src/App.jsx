@@ -140,7 +140,7 @@ function App() {
               }}
               animate={{
                 '--letter-y': isLetterOut ? '-290px' : '0px',
-                '--letter-scale': isZoomed ? 2.2 : 1
+                '--letter-scale': isZoomed ? 1.8 : 1
               }}
               transition={{ duration: 1.1, ease: [0.2, 0.7, 0.2, 1] }}
               onClick={(e) => {
