@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+// Using external SVG files from /public for back, front, flap
 
 function App() {
   const [isOpening, setIsOpening] = useState(false)
@@ -93,27 +94,29 @@ function App() {
 
         .envelope {
           position: relative;
-          width: 100%;
-          height: 240px;
+          width: 520px;
+          max-width: 92vw;
+          height: 340px;
         }
 
-        /* Back of envelope */
-        .env-back {
+        /* Back of envelope (SVG) */
+        .env-back-svg {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, #f6efe7, #f0e6db);
-          border-radius: 14px;
-          box-shadow: 0 8px 20px var(--env-shadow);
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+          filter: drop-shadow(0 10px 24px var(--env-shadow));
         }
 
         /* Letter sits inside */
         .letter {
           position: absolute;
           left: 50%;
-          bottom: 18px;
+          bottom: 26px;
           transform: translateX(-50%);
-          width: 86%;
-          height: 70%;
+          width: 84%;
+          height: 72%;
           background: var(--env-paper);
           border-radius: 10px;
           box-shadow: 0 8px 14px var(--env-shadow), inset 0 0 0 1px rgba(0,0,0,0.04);
@@ -131,46 +134,37 @@ function App() {
           object-position: center;
         }
 
-        /* Front of envelope (triangles) to hide letter initially */
-        .env-front {
+        /* Front pocket (SVG) */
+        .env-front-svg {
           position: absolute;
           inset: 0;
+          width: 100%;
+          height: 100%;
           pointer-events: none;
-        }
-        .front-bottom {
-          position: absolute;
-          left: 0; right: 0; bottom: 0; height: 58%;
-          background: linear-gradient(180deg, #efe5d9, #e9decf);
-          border-radius: 0 0 14px 14px;
-          clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
-          box-shadow: 0 8px 18px var(--env-shadow-strong);
-          z-index: 6; /* keep bottom cover above the letter while it is inside */
+          z-index: 6; /* above letter while inside */
+          filter: drop-shadow(0 6px 14px var(--env-shadow));
         }
 
-        .flap {
+        /* Flap (SVG) */
+        .flap-svg {
           position: absolute;
           left: 0; right: 0; top: 0; height: 62%;
+          width: 100%;
           transform-origin: 50% 0%;
           transform: rotateX(0deg);
           transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
           z-index: 3; /* below sliding letter, so the top edge does not tuck under */
-        }
-        .flap-inner {
-          position: absolute; inset: 0;
-          background: linear-gradient(180deg, #e9dfd1, #e1d5c4);
-          border-radius: 14px 14px 0 0;
-          clip-path: polygon(50% 100%, 0 0, 100% 0);
-          box-shadow: 0 4px 10px var(--env-shadow);
+          filter: drop-shadow(0 4px 10px var(--env-shadow));
         }
 
         
 
         /* Open state */
-        .envelope.is-opening .flap { transform: rotateX(-172deg); }
+        .envelope.is-opening .flap-svg { transform: rotateX(-172deg); }
 
         /* Letter slide out */
         .envelope.letter-out .letter {
-          transform: translate(-50%, -120px);
+          transform: translate(-50%, -180px);
           box-shadow: 0 16px 26px var(--env-shadow-strong), inset 0 0 0 1px rgba(0,0,0,0.04);
           z-index: 4; /* above flap, but still below front-bottom */
         }
@@ -188,16 +182,18 @@ function App() {
         <div className="envelope-scene">
           <div className={`envelope ${isOpening ? 'is-opening' : ''} ${isLetterOut ? 'letter-out' : ''} ${isLetterAbove ? 'letter-front' : ''}`}
                aria-label="Animated envelope revealing content">
-            <div className="env-back" />
+            {/* Back SVG */}
+            <img className="env-back-svg" src="/env-back.svg" alt="" />
 
             <div className="letter" aria-hidden={!isOpening}>
               <img className="letter-image" src="/pumba.jpg" alt="Card artwork" />
             </div>
 
-            <div className="env-front">
-              <div className="flap"><div className="flap-inner" /></div>
-              <div className="front-bottom" />
-            </div>
+            {/* Front pocket SVG (traditional) */}
+            <img className="env-front-svg" src="/env-front.svg" alt="" />
+
+            {/* Flap SVG */}
+            <img className="flap-svg" src="/env-flap.svg" alt="" />
           </div>
         </div>
 

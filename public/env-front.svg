@@ -1,0 +1,15 @@
+<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="pocketGradFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#fbfbfb" />
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M0 210 L260 130 L520 210 L520 340 L0 340 Z" fill="url(#pocketGradFront)" stroke="rgba(0,0,0,0.08)" />
+    <path d="M0 210 L260 130" stroke="rgba(0,0,0,0.08)" stroke-width="1" fill="none" />
+    <path d="M520 210 L260 130" stroke="rgba(0,0,0,0.08)" stroke-width="1" fill="none" />
+  </g>
+</svg>
+
+

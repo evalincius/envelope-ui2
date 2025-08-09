@@ -1,0 +1,14 @@
+<svg viewBox="0 0 520 212" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="paperGradFlap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f4f0ec" />
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M0 0 L520 0 L260 212 Z" fill="#fff" stroke="rgba(0,0,0,0.06)" />
+    <path d="M16 0 L504 0 L260 196 Z" fill="url(#paperGradFlap)" opacity="0.65" />
+  </g>
+</svg>
+
+
