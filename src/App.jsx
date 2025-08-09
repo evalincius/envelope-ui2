@@ -8,7 +8,6 @@ function App() {
   const timeoutsRef = useRef([])
 
   useEffect(() => {
-    startSequence()
     return () => {
       timeoutsRef.current.forEach(clearTimeout)
       timeoutsRef.current = []
@@ -20,22 +19,37 @@ function App() {
     timeoutsRef.current.forEach(clearTimeout)
     timeoutsRef.current = []
 
-    // Start by keeping flap open and sliding letter back in
+    // Open the flap and reset letter positions
     setIsOpening(true)
     setIsLetterOut(false)
     setIsLetterAbove(false)
 
-    // After letter slides back (1.1s), close the flap
-    timeoutsRef.current.push(setTimeout(() => setIsOpening(false), 1100))
+    // Timings aligned with CSS transitions:
+    // flap: 1.2s, letter slide: 1.1s
+    const flapOpenMs = 1200
+    const letterSlideMs = 1100
 
-    // Re-open the flap after it has visibly closed
-    timeoutsRef.current.push(setTimeout(() => setIsOpening(true), 2200))
-
-    // Begin sliding the letter out once flap is opening
-    timeoutsRef.current.push(setTimeout(() => setIsLetterOut(true), 3700))
+    // Begin sliding the letter out shortly after the flap is open
+    timeoutsRef.current.push(setTimeout(() => setIsLetterOut(true), flapOpenMs + 100))
 
     // When slide-out completes, bring the letter above all layers
-    timeoutsRef.current.push(setTimeout(() => setIsLetterAbove(true), 4800))
+    timeoutsRef.current.push(
+      setTimeout(() => setIsLetterAbove(true), flapOpenMs + 100 + letterSlideMs + 100)
+    )
+  }
+
+  function resetSequence() {
+    // Clear running timers
+    timeoutsRef.current.forEach(clearTimeout)
+    timeoutsRef.current = []
+
+    // Ensure letter goes back inside and is not above
+    setIsLetterAbove(false)
+    setIsLetterOut(false)
+
+    // After the letter slides back in, close the flap
+    const letterSlideMs = 1100
+    timeoutsRef.current.push(setTimeout(() => setIsOpening(false), letterSlideMs + 100))
   }
 
   return (
@@ -99,6 +113,7 @@ function App() {
           width: 520px;
           max-width: 92vw;
           height: 340px;
+          cursor: pointer;
         }
 
         /* Back of envelope (SVG) */
@@ -208,7 +223,8 @@ function App() {
       <div className="stage">
         <div className="envelope-scene">
           <div className={`envelope ${isOpening ? 'is-opening' : ''} ${isLetterOut ? 'letter-out' : ''} ${isLetterAbove ? 'letter-front' : ''}`}
-               aria-label="Animated envelope revealing content">
+               onClick={startSequence}
+               aria-label="Animated envelope revealing content (click to open)">
             {/* Back SVG */}
             <img className="env-back-svg" src="/env-back.svg" alt="" />
 
@@ -228,7 +244,7 @@ function App() {
         </div>
 
         <div className="controls">
-          <button className="replay" onClick={startSequence}>Replay</button>
+          <button className="replay" onClick={resetSequence}>Reset</button>
         </div>
       </div>
     </div>
