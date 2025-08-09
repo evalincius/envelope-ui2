@@ -147,8 +147,8 @@ function App() {
           filter: drop-shadow(0 6px 14px var(--env-shadow));
         }
 
-        /* Flap (SVG) */
-        .flap-svg {
+        /* Flap (3D wrapper with two faces) */
+        .flap {
           position: absolute;
           left: 0; right: 0; top: 0; height: 62%;
           width: 100%;
@@ -156,14 +156,37 @@ function App() {
           transform-origin: 50% 0%;
           transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(0deg);
           transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
-          z-index: 3; /* below sliding letter, so the top edge does not tuck under */
-          filter: drop-shadow(0 4px 10px var(--env-shadow));
+          z-index: 3; /* below sliding letter, but above back */
+          transform-style: preserve-3d;
+          -webkit-transform-style: preserve-3d;
+          will-change: transform;
         }
+
+        .flap-face {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          pointer-events: none;
+          transform: translateZ(0.1px);
+          filter: drop-shadow(0 4px 10px var(--env-shadow));
+          object-fit: cover;
+          object-position: top center;
+          transition: opacity .4s ease;
+        }
+
+        .flap-inner { transform: rotateX(180deg) translateZ(0.1px); opacity: 0; }
+
+        /* Crossfade during opening */
+        .envelope.is-opening .flap-inner { opacity: 1; }
+        .envelope.is-opening .flap-outer { opacity: 0; }
 
         
 
         /* Open state */
-        .envelope.is-opening .flap-svg { transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(-172deg); }
+        .envelope.is-opening .flap { transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(-172deg); }
 
         /* Letter slide out */
         .envelope.letter-out .letter {
@@ -195,8 +218,11 @@ function App() {
             {/* Front pocket SVG (traditional) */}
             <img className="env-front-svg" src="/env-front.svg" alt="" />
 
-            {/* Flap SVG */}
-            <img className="flap-svg" src="/env-flap.svg" alt="" />
+            {/* Flap (outer + inner faces) */}
+            <div className="flap" aria-hidden>
+              <img className="flap-face flap-outer" src="/env-flap-outer.svg" alt="" />
+              <img className="flap-face flap-inner" src="/env-flap-inner.svg" alt="" />
+            </div>
           </div>
         </div>
 
