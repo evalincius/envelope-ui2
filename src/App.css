@@ -91,8 +91,8 @@ body {
   bottom: 26px;
   /* Keep X-centering in CSS; Y is animated via CSS var */
   transform: translateX(-50%) translateY(var(--letter-y));
-  width: 34%;
-  height: 72%;
+  width: 450px;
+  height: 300px;
   background: var(--env-paper);
   border-radius: 10px;
   box-shadow: 0 8px 14px var(--env-shadow), inset 0 0 0 1px rgba(0, 0, 0, 0.04);
