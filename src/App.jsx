@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 // Using external SVG files from /public for back, front, flap
 
 function App() {
@@ -64,6 +65,8 @@ function App() {
           --ink: #2b2b2b;
           --flap-scale-x: 1.0147; /* normalize flap X scale to match back/front */
           --flap-scale-y: 1.0162; /* normalize flap Y scale to match back/front */
+          --flap-rot: 0deg; /* animated via Motion */
+          --letter-y: 0px; /* animated via Motion */
         }
 
         * { box-sizing: border-box; }
@@ -131,7 +134,8 @@ function App() {
           position: absolute;
           left: 50%;
           bottom: 26px;
-          transform: translateX(-50%);
+          /* Keep X-centering in CSS; Y is animated via CSS var */
+          transform: translateX(-50%) translateY(var(--letter-y));
           width: 34%;
           height: 72%;
           background: var(--env-paper);
@@ -139,7 +143,6 @@ function App() {
           box-shadow: 0 8px 14px var(--env-shadow), inset 0 0 0 1px rgba(0,0,0,0.04);
           overflow: hidden;
           display: block;
-          transition: transform 1.1s cubic-bezier(.2,.7,.2,1), opacity .6s ease;
           z-index: 2;
         }
 
@@ -169,8 +172,8 @@ function App() {
           width: 100%;
           height: 100%;
           transform-origin: 50% 0%;
-          transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(0deg);
-          transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
+          /* Keep constant scale in CSS; rotate is animated via CSS var */
+          transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(var(--flap-rot));
           z-index: 3; /* below sliding letter, but above back */
           transform-style: preserve-3d;
           -webkit-transform-style: preserve-3d;
@@ -189,30 +192,10 @@ function App() {
           filter: drop-shadow(0 4px 10px var(--env-shadow));
           object-fit: cover;
           object-position: top center;
-          transition: opacity .4s ease;
         }
 
         .flap-inner { transform: rotateX(180deg) translateZ(0.1px); opacity: 0; }
-        .flap-outer { transform: rotate(180deg) translateZ(0.1px); }
-
-        /* Crossfade during opening */
-        .envelope.is-opening .flap-inner { opacity: 1; }
-        .envelope.is-opening .flap-outer { opacity: 0; }
-
-        
-
-        /* Open state */
-        .envelope.is-opening .flap { transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(-172deg); }
-
-        /* Letter slide out */
-        .envelope.letter-out .letter {
-          transform: translate(-50%, -180px);
-          box-shadow: 0 16px 26px var(--env-shadow-strong), inset 0 0 0 1px rgba(0,0,0,0.04);
-          z-index: 4; /* above flap, but still below front-bottom */
-        }
-
-        /* Once fully out, raise above everything including front-bottom */
-        .envelope.letter-front .letter { z-index: 7; }
+        .flap-outer { transform: rotate(180deg) translateZ(0.1px); opacity: 1; }
 
         .controls { display: grid; place-items: center; }
         .replay {
@@ -222,24 +205,56 @@ function App() {
 
       <div className="stage">
         <div className="envelope-scene">
-          <div className={`envelope ${isOpening ? 'is-opening' : ''} ${isLetterOut ? 'letter-out' : ''} ${isLetterAbove ? 'letter-front' : ''}`}
+          <div className={`envelope`}
                onClick={startSequence}
                aria-label="Animated envelope revealing content (click to open)">
             {/* Back SVG */}
             <img className="env-back-svg" src="/env-back.svg" alt="" />
 
-            <div className="letter" aria-hidden={!isOpening}>
+            <motion.div
+              className="letter"
+              aria-hidden={!isOpening}
+              style={{
+                '--letter-y': '0px',
+                zIndex: isLetterAbove ? 7 : (isLetterOut ? 4 : 2),
+                boxShadow: isLetterOut
+                  ? '0 16px 26px var(--env-shadow-strong), inset 0 0 0 1px rgba(0,0,0,0.04)'
+                  : '0 8px 14px var(--env-shadow), inset 0 0 0 1px rgba(0,0,0,0.04)'
+              }}
+              animate={{ '--letter-y': isLetterOut ? '-180px' : '0px' }}
+              transition={{ duration: 1.1, ease: [0.2, 0.7, 0.2, 1] }}
+            >
               <img className="letter-image" src="/pumba.jpg" alt="Card artwork" />
-            </div>
+            </motion.div>
 
             {/* Front pocket SVG (traditional) */}
             <img className="env-front-svg" src="/env-front.svg" alt="" />
 
             {/* Flap (outer + inner faces) */}
-            <div className="flap" aria-hidden>
-              <img className="flap-face flap-outer" src="/env-flap-outer.svg" alt="" />
-              <img className="flap-face flap-inner" src="/env-flap-inner.svg" alt="" />
-            </div>
+            <motion.div
+              className="flap"
+              aria-hidden
+              style={{ '--flap-rot': '0deg' }}
+              animate={{ '--flap-rot': isOpening ? '-172deg' : '0deg' }}
+              transition={{ duration: 1.2, ease: [0.2, 0.7, 0.2, 1] }}
+            >
+              <motion.img
+                className="flap-face flap-outer"
+                src="/env-flap-outer.svg"
+                alt=""
+                initial={false}
+                animate={{ opacity: isOpening ? 0 : 1 }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
+              />
+              <motion.img
+                className="flap-face flap-inner"
+                src="/env-flap-inner.svg"
+                alt=""
+                initial={false}
+                animate={{ opacity: isOpening ? 1 : 0 }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
+              />
+            </motion.div>
           </div>
         </div>
 
