@@ -152,7 +152,7 @@ function App() {
           position: absolute;
           left: 0; right: 0; top: 0; height: 62%;
           width: 100%;
-          height: 99%;
+          height: 100%;
           transform-origin: 50% 0%;
           transform: scale(var(--flap-scale-x), var(--flap-scale-y)) rotateX(0deg);
           transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
@@ -178,6 +178,7 @@ function App() {
         }
 
         .flap-inner { transform: rotateX(180deg) translateZ(0.1px); opacity: 0; }
+        .flap-outer { transform: rotate(180deg) translateZ(0.1px); }
 
         /* Crossfade during opening */
         .envelope.is-opening .flap-inner { opacity: 1; }
